@@ -19,26 +19,24 @@
         label {
             font-weight: bold;
         }
-        input[type="text"], input[type="email"], input[type="time"] {
+        input[type="text"], input[type="email"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             border: 1px solid #a1887f; /* Brown border */
             border-radius: 5px;
-            background-color: #fff8e1; /* Light background for input fields */
         }
         button {
-            background-color: #f8f4e3; /* Match button background with form background */
-            color: #8d6e63; /* Brown text */
+            background-color: #8d6e63; /* Darker brown button */
+            color: white;
             padding: 10px 15px;
-            border: 2px solid #8d6e63; /* Brown border for button */
+            border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
         }
         button:hover {
-            background-color: #8d6e63; /* Darker brown on hover */
-            color: #fff; /* White text on hover */
+            background-color: #6f4c3e; /* Darker brown on hover */
         }
         #response {
             margin-top: 20px;
@@ -56,37 +54,34 @@
         <input type="email" id="email" name="email" required><br>
         <label for="company">Company:</label><br>
         <input type="text" id="company" name="company"><br><br>
-        
-        <label for="meeting">Meeting Time:</label><br>
-        <input type="time" id="meeting" name="meeting" required><br><br>
-        
         <button type="submit">Submit</button>
         <div id="response"></div>
     </form>
 
     <script>
-        async function fetchScriptURL() {
-            const response = await fetch("https://script.google.com/macros/s/AKfycbyWkAMVYN_ceqseUuIpE6vWfeiA5cz8Ht4HTkbXKi3tny0tjT9RzYPoLiTJnzEAG5b9RQ/exec"); // URL for doGet
-            const scriptUrl = await response.text();
-            return scriptUrl; // Return the current script URL
-        }
+        let submitted = false; // Track if the form has been submitted
 
-        async function submitForm(event) {
+        function submitForm(event) {
             event.preventDefault(); // Prevent the default form submission
             
-            const scriptUrl = await fetchScriptURL(); // Fetch the current script URL
+            // Check if the form has already been submitted
+            if (submitted) {
+                return; // Exit if already submitted
+            }
+            submitted = true; // Mark as submitted
             
             // Create a FormData object from the form
-            const formData = new FormData(document.getElementById("myForm"));
+            var formData = new FormData(document.getElementById("myForm"));
             
             // Send the form data to the Google Apps Script Web App URL
-            fetch(scriptUrl, {
+            fetch("https://script.google.com/macros/s/AKfycbztJo_y02ZOytOiCp5lIA84IxkW9-_-RIwffFeDoxIK-ReHVIHsa8pMKc_vUqT6j6QYvA/exec", {
                 method: "POST",
                 body: formData
             })
             .then(response => response.text())
             .then(result => {
-                document.getElementById("response").innerText = result; // Show result from server
+                // Display a success message
+                document.getElementById("response").innerText = "Done!";
             })
             .catch(error => {
                 console.error("Error:", error);
