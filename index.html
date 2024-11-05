@@ -27,16 +27,16 @@
             border-radius: 5px;
         }
         button {
-            background-color: #8d6e63; /* Darker brown button */
-            color: white;
+            background-color: #ffecb3; /* Same background color */
+            color: #5d4037; /* Brown text */
             padding: 10px 15px;
-            border: none;
+            border: 1px solid #5d4037;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
         }
         button:hover {
-            background-color: #6f4c3e; /* Darker brown on hover */
+            background-color: #ffe082; /* Slightly darker yellow */
         }
         #response {
             margin-top: 20px;
@@ -59,17 +59,19 @@
     </form>
 
     <script>
-        let submitted = false; // Track if the form has been submitted
+        let submittedEmails = []; // Array to track submitted emails
 
         function submitForm(event) {
             event.preventDefault(); // Prevent the default form submission
             
-            // Check if the form has already been submitted
-            if (submitted) {
+            let email = document.getElementById("email").value;
+
+            // Check if the email has already been submitted
+            if (submittedEmails.includes(email)) {
+                document.getElementById("response").innerText = "This email has already been used!";
                 return; // Exit if already submitted
             }
-            submitted = true; // Mark as submitted
-            
+
             // Create a FormData object from the form
             var formData = new FormData(document.getElementById("myForm"));
             
@@ -80,6 +82,9 @@
             })
             .then(response => response.text())
             .then(result => {
+                // Store the email to prevent multiple submissions
+                submittedEmails.push(email);
+                
                 // Display a success message
                 document.getElementById("response").innerText = "Done!";
             })
