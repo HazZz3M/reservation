@@ -19,7 +19,7 @@
         label {
             font-weight: bold;
         }
-        input[type="text"], input[type="email"], input[type="time"] {
+        input[type="text"], input[type="email"], input[type="time"], input[type="password"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -78,9 +78,10 @@
 
     <!-- Hidden section for Google Apps Script URL -->
     <div id="hiddenSection">
-        <label for="scriptURL">Enter Google Apps Script Web App URL:</label><br>
-        <input type="text" id="scriptURL" name="scriptURL" placeholder="Enter URL here" required><br>
-        <button type="button" onclick="saveScriptURL()">Save URL</button>
+        <label for="password">Enter Password:</label><br>
+        <input type="password" id="password" name="password" placeholder="Enter Password" required><br>
+        <button type="button" onclick="checkPassword()">Submit</button>
+        <div id="passwordError" style="color: red; display: none;">Incorrect password. Please try again.</div>
     </div>
 
     <!-- Button to toggle the hidden section -->
@@ -100,6 +101,12 @@
         <label for="meeting">Meeting Time:</label><br>
         <input type="time" id="meeting" name="meeting" required><br><br>
         
+        <div id="scriptURLField" style="display:none;">
+            <label for="scriptURL">Enter Google Apps Script Web App URL:</label><br>
+            <input type="text" id="scriptURL" name="scriptURL" placeholder="Enter URL here" required><br>
+            <button type="button" onclick="saveScriptURL()">Save URL</button>
+        </div>
+
         <button type="submit">Submit</button>
         <div id="response"></div>
     </form>
@@ -107,6 +114,7 @@
     <script>
         let submitted = false; // Track if the form has been submitted
         let scriptURL = ""; // Variable to hold the script URL
+        let isPasswordCorrect = false; // Flag to track password validation
 
         // Function to toggle the visibility of the hidden section
         function toggleHiddenSection() {
@@ -118,11 +126,27 @@
             }
         }
 
+        // Function to check if the entered password is correct
+        function checkPassword() {
+            var enteredPassword = document.getElementById("password").value;
+            var correctPassword = "AtharisGreat2025";
+            if (enteredPassword === correctPassword) {
+                document.getElementById("passwordError").style.display = "none";
+                document.getElementById("scriptURLField").style.display = "block"; // Show the URL input field
+                isPasswordCorrect = true; // Mark password as correct
+            } else {
+                document.getElementById("passwordError").style.display = "block"; // Show error message
+            }
+        }
+
         // Function to save the script URL entered by the user
         function saveScriptURL() {
-            scriptURL = document.getElementById("scriptURL").value;
-            alert("Script URL saved!");
-            toggleHiddenSection(); // Hide the section after saving
+            if (isPasswordCorrect) {
+                scriptURL = document.getElementById("scriptURL").value;
+                alert("Script URL saved!");
+            } else {
+                alert("You must enter the correct password to save the URL.");
+            }
         }
 
         // Function to handle form submission
@@ -134,7 +158,7 @@
                 return; // Exit if already submitted
             }
             submitted = true; // Mark as submitted
-            
+
             if (scriptURL === "") {
                 alert("Please enter a valid Google Apps Script URL.");
                 return; // Don't submit if no URL is provided
