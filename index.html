@@ -61,6 +61,7 @@
             position: relative;
             overflow: hidden;
             background-color: #4A4A4A; /* Wheel background */
+            cursor: pointer;
         }
         .hand {
             width: 4px;
@@ -68,15 +69,14 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform-origin: bottom;
+            transform-origin: 100%;
+            transition: transform 0.2s ease-out;
         }
         .hand.hour {
             height: 40px;
-            transform: rotate(90deg);
         }
         .hand.minute {
             height: 60px;
-            transform: rotate(180deg);
         }
         .controls {
             display: flex;
@@ -113,9 +113,9 @@
     </form>
 
     <script>
-        let submitted = false; // Track if the form has been submitted
-        let hourAngle = 90; // Initial angle for hour hand
-        let minuteAngle = 180; // Initial angle for minute hand
+        let submitted = false; // Track if the form has already been submitted
+        let hourAngle = 90; // Initial angle for hour hand (starting at 3 o'clock)
+        let minuteAngle = 180; // Initial angle for minute hand (starting at 6 o'clock)
         const hourHand = document.getElementById('hourHand');
         const minuteHand = document.getElementById('minuteHand');
         const selectedTimeLabel = document.getElementById('selectedTime');
@@ -140,21 +140,39 @@
 
         // Handle time wheel rotation
         const wheel = document.getElementById('timeWheel');
-        wheel.addEventListener('click', function(event) {
+        let isDragging = false;
+
+        // Event listener for starting the drag (rotation)
+        wheel.addEventListener('mousedown', function(event) {
+            isDragging = true;
             const rect = wheel.getBoundingClientRect();
             const wheelCenterX = rect.left + rect.width / 2;
             const wheelCenterY = rect.top + rect.height / 2;
-            const angle = Math.atan2(event.clientY - wheelCenterY, event.clientX - wheelCenterX) * (180 / Math.PI) + 90;
 
-            if (angle < 0) angle += 360;
+            function rotateToAngle(clientX, clientY) {
+                const angle = Math.atan2(clientY - wheelCenterY, clientX - wheelCenterX) * (180 / Math.PI) + 90;
+                if (angle < 0) angle += 360;
 
-            // Set the hour and minute angles based on click position
-            hourAngle = Math.floor(angle / 30) * 30; // Adjust hour hand (30 degrees per hour)
-            minuteAngle = Math.floor(angle / 6) * 6; // Adjust minute hand (6 degrees per minute)
+                // Set the hour and minute angles based on click position
+                hourAngle = Math.floor(angle / 30) * 30; // Adjust hour hand (30 degrees per hour)
+                minuteAngle = Math.floor(angle / 6) * 6; // Adjust minute hand (6 degrees per minute)
 
-            rotateHand(hourHand, hourAngle);
-            rotateHand(minuteHand, minuteAngle);
-            updateSelectedTime();
+                rotateHand(hourHand, hourAngle);
+                rotateHand(minuteHand, minuteAngle);
+                updateSelectedTime();
+            }
+
+            // Update the wheel rotation while dragging
+            document.addEventListener('mousemove', function(event) {
+                if (isDragging) {
+                    rotateToAngle(event.clientX, event.clientY);
+                }
+            });
+
+            // End the dragging on mouse up
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
         });
 
         function submitForm(event) {
