@@ -3,6 +3,7 @@
 <head>
     <title>Form Submission</title>
     <style>
+        /* Base Styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #1D1D1B; /* Body background color */
@@ -15,6 +16,8 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
         }
         label {
             font-weight: bold;
@@ -37,6 +40,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
+            width: 100%; /* Full width on mobile */
         }
         button:hover {
             background-color: #FFD700; /* Darker yellow on hover */
@@ -46,6 +50,23 @@
             margin-top: 20px;
             font-weight: bold;
             color: #FEE92E; /* Response text color */
+        }
+
+        /* Responsive Styles for Mobile and Tablets */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            form {
+                padding: 15px;
+                width: 100%; /* Full width on small screens */
+            }
+            button {
+                width: 100%; /* Full width for the submit button on smaller screens */
+            }
+            input[type="text"], input[type="email"], input[type="time"] {
+                width: 100%; /* Ensure input fields are full-width */
+            }
         }
     </style>
 </head>
