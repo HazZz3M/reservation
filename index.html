@@ -19,7 +19,7 @@
         label {
             font-weight: bold;
         }
-        input[type="text"], input[type="email"] {
+        input[type="text"], input[type="email"], input[type="time"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -54,6 +54,11 @@
         <input type="email" id="email" name="email" required><br>
         <label for="company">Company:</label><br>
         <input type="text" id="company" name="company"><br><br>
+        
+        <!-- New Meeting Time input field -->
+        <label for="meeting">Meeting Time:</label><br>
+        <input type="time" id="meeting" name="meeting" required><br><br>
+        
         <button type="submit">Submit</button>
         <div id="response"></div>
     </form>
@@ -74,7 +79,7 @@
             var formData = new FormData(document.getElementById("myForm"));
             
             // Send the form data to the Google Apps Script Web App URL
-            fetch("https://script.google.com/macros/s/AKfycbztJo_y02ZOytOiCp5lIA84IxkW9-_-RIwffFeDoxIK-ReHVIHsa8pMKc_vUqT6j6QYvA/exec", {
+            fetch("https://script.google.com/macros/s/AKfycbxRmUVRs0Eb3blXYdaFOOFa-nzVzdbNu9WTjKW4GTlC/dev", {
                 method: "POST",
                 body: formData
             })
