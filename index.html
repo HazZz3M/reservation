@@ -44,9 +44,48 @@
             margin-top: 20px;
             font-weight: bold;
         }
+
+        /* Style for the hidden section */
+        #hiddenSection {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none; /* Initially hidden */
+            z-index: 10;
+        }
+        #toggleButton {
+            background-color: #8d6e63;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            z-index: 20;
+        }
+        #toggleButton:hover {
+            background-color: #6f4c3e;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Hidden section for Google Apps Script URL -->
+    <div id="hiddenSection">
+        <label for="scriptURL">Enter Google Apps Script Web App URL:</label><br>
+        <input type="text" id="scriptURL" name="scriptURL" placeholder="Enter URL here" required><br>
+        <button type="button" onclick="saveScriptURL()">Save URL</button>
+    </div>
+
+    <!-- Button to toggle the hidden section -->
+    <button id="toggleButton" onclick="toggleHiddenSection()">Configure Script URL</button>
+
     <form id="myForm" onsubmit="submitForm(event)">
         <label for="name">Name:</label><br>
         <input type="text" id="name" name="name" required><br>
@@ -67,21 +106,45 @@
 
     <script>
         let submitted = false; // Track if the form has been submitted
+        let scriptURL = ""; // Variable to hold the script URL
 
+        // Function to toggle the visibility of the hidden section
+        function toggleHiddenSection() {
+            var hiddenSection = document.getElementById("hiddenSection");
+            if (hiddenSection.style.display === "none") {
+                hiddenSection.style.display = "block";
+            } else {
+                hiddenSection.style.display = "none";
+            }
+        }
+
+        // Function to save the script URL entered by the user
+        function saveScriptURL() {
+            scriptURL = document.getElementById("scriptURL").value;
+            alert("Script URL saved!");
+            toggleHiddenSection(); // Hide the section after saving
+        }
+
+        // Function to handle form submission
         function submitForm(event) {
             event.preventDefault(); // Prevent the default form submission
-            
+
             // Check if the form has already been submitted
             if (submitted) {
                 return; // Exit if already submitted
             }
             submitted = true; // Mark as submitted
             
+            if (scriptURL === "") {
+                alert("Please enter a valid Google Apps Script URL.");
+                return; // Don't submit if no URL is provided
+            }
+
             // Create a FormData object from the form
             var formData = new FormData(document.getElementById("myForm"));
-            
+
             // Send the form data to the Google Apps Script Web App URL
-            fetch("https://script.google.com/macros/s/AKfycbyzpqWySHb3ZwH9p0E0pWdUyYMczVKlNj1rVP4S5jfe6aDYNHb6EtQVNF5mnHUyaNFOKA/exec", {
+            fetch(scriptURL, {
                 method: "POST",
                 body: formData
             })
@@ -96,5 +159,6 @@
             });
         }
     </script>
+
 </body>
 </html>
