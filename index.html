@@ -12,8 +12,11 @@
             background-color: #1D1D1B; /* Body background color */
             color: #FEE92E; /* Text color */
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px; /* Increased padding for better spacing */
+            box-sizing: border-box; /* Ensure padding is considered in the element's total width/height */
         }
+
+        /* Form Styles */
         form {
             background-color: #3C3C3C; /* Dark background for the form */
             padding: 20px;
@@ -21,34 +24,50 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             max-width: 600px;
             margin: auto;
+            box-sizing: border-box; /* Prevent the box from overflowing */
         }
+
+        /* Labels */
         label {
             font-weight: bold;
             color: #FEE92E; /* Label color */
+            margin-bottom: 5px;
+            display: block;
         }
+
+        /* Input Fields */
         input[type="text"], input[type="email"], input[type="time"] {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid white; /* White border */
+            padding: 12px 15px; /* Increased padding for better spacing */
+            margin: 8px 0;
+            border: 1px solid #ffffff; /* White border for inputs */
             border-radius: 5px;
             background-color: #4A4A4A; /* Dark background for input fields */
             color: #FEE92E; /* Text color in input fields */
+            box-sizing: border-box; /* Ensures padding is included within width */
         }
+
+        /* Submit Button */
         button {
             background-color: #FEE92E; /* Submit button color */
             color: #1D1D1B; /* Button text color */
-            padding: 10px 15px;
+            padding: 12px 20px; /* Button padding */
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
             width: 100%; /* Full width on mobile */
+            box-sizing: border-box; /* Ensure button width includes padding */
+            margin-top: 20px; /* Space above the button */
         }
+
+        /* Hover effect for button */
         button:hover {
             background-color: #FFD700; /* Darker yellow on hover */
             color: #fff; /* White text on hover */
         }
+
+        /* Response Message */
         #response {
             margin-top: 20px;
             font-weight: bold;
@@ -58,10 +77,10 @@
         /* Responsive Styles for Mobile and Tablets */
         @media (max-width: 768px) {
             body {
-                padding: 10px;
+                padding: 20px; /* Reduced padding for smaller screens */
             }
             form {
-                padding: 15px;
+                padding: 20px;
                 width: 100%; /* Full width on small screens */
             }
             button {
@@ -75,38 +94,40 @@
 </head>
 <body>
     <form id="myForm" onsubmit="submitForm(event)">
-        <label for="name">Name:</label><br>
+        <label for="name">Name:</label>
         <input type="text" id="name" name="name" required><br>
-        <label for="phone">Phone:</label><br>
+        
+        <label for="phone">Phone:</label>
         <input type="text" id="phone" name="phone" required><br>
-        <label for="email">Email:</label><br>
+
+        <label for="email">Email:</label>
         <input type="email" id="email" name="email" required><br>
-        <label for="company">Company:</label><br>
-        <input type="text" id="company" name="company"><br><br>
-        
-        <label for="meeting">Meeting Time:</label><br>
-        <!-- Original time selector -->
-        <input type="time" id="meeting" name="meeting" required><br><br>
-        
+
+        <label for="company">Company:</label>
+        <input type="text" id="company" name="company"><br>
+
+        <label for="meeting">Meeting Time:</label>
+        <input type="time" id="meeting" name="meeting" required><br>
+
         <button type="submit">Submit</button>
         <div id="response"></div>
     </form>
 
     <script>
-        let submitted = false; // Track if the form has already been submitted
+        let submitted = false; // Track if the form has been submitted
 
         function submitForm(event) {
             event.preventDefault(); // Prevent the default form submission
-            
+
             // Check if the form has already been submitted
             if (submitted) {
                 return; // Exit if already submitted
             }
             submitted = true; // Mark as submitted
-            
+
             // Create a FormData object from the form
             var formData = new FormData(document.getElementById("myForm"));
-            
+
             // Send the form data to the new Google Apps Script Web App URL
             fetch("https://script.google.com/macros/s/AKfycbwC1th9NwkgufffkIkk-QiAI90cyyoMB_ZLcLkZowEUIMB7TDZpjLKWp4kABG2JIxbOMA/exec", {
                 method: "POST",
