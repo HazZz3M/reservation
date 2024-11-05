@@ -20,7 +20,7 @@
             font-weight: bold;
             color: #FEE92E; /* Label color */
         }
-        input[type="text"], input[type="email"], input[type="time"], input[type="text"].meeting-time {
+        input[type="text"], input[type="email"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -47,6 +47,40 @@
             font-weight: bold;
             color: #FEE92E; /* Response text color */
         }
+        .time-selector {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .wheel {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 10px solid #FEE92E;
+            position: relative;
+            overflow: hidden;
+        }
+        .hand {
+            width: 4px;
+            background-color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: bottom;
+        }
+        .hand.hour {
+            height: 40px;
+            transform: rotate(90deg);
+        }
+        .hand.minute {
+            height: 60px;
+            transform: rotate(180deg);
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -60,9 +94,17 @@
         <label for="company">Company:</label><br>
         <input type="text" id="company" name="company"><br><br>
         
-        <!-- Change Meeting Time input to a text input for free selection -->
-        <label for="meeting">Meeting Time (e.g., 2:30 PM):</label><br>
-        <input type="text" id="meeting" name="meeting" class="meeting-time" required placeholder="HH:MM AM/PM"><br><br>
+        <label>Meeting Time:</label><br>
+        <div class="time-selector">
+            <div class="wheel" id="timeWheel">
+                <div class="hand hour" id="hourHand"></div>
+                <div class="hand minute" id="minuteHand"></div>
+            </div>
+        </div>
+        <div class="controls">
+            <button type="button" id="setTimeButton">Set Time</button>
+            <span id="selectedTime" style="color: #FEE92E;">Selected Time: 02:00 PM</span>
+        </div>
         
         <button type="submit">Submit</button>
         <div id="response"></div>
@@ -70,6 +112,29 @@
 
     <script>
         let submitted = false; // Track if the form has been submitted
+        let hourAngle = 90; // Initial angle for hour hand
+        let minuteAngle = 180; // Initial angle for minute hand
+        const hourHand = document.getElementById('hourHand');
+        const minuteHand = document.getElementById('minuteHand');
+        const selectedTimeLabel = document.getElementById('selectedTime');
+
+        // Rotate the hour and minute hands
+        function rotateHand(hand, angle) {
+            hand.style.transform = `rotate(${angle}deg)`;
+        }
+
+        // Update the selected time display
+        function updateSelectedTime() {
+            const hour = ((hourAngle / 30) % 12) || 12; // Convert angle to hour (30 degrees per hour)
+            const minute = Math.round(minuteAngle / 6); // Convert angle to minute (6 degrees per minute)
+            const period = hour >= 12 ? 'PM' : 'AM';
+            selectedTimeLabel.innerText = `Selected Time: ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')} ${period}`;
+        }
+
+        // Set time button action
+        document.getElementById('setTimeButton').onclick = () => {
+            updateSelectedTime();
+        };
 
         function submitForm(event) {
             event.preventDefault(); // Prevent the default form submission
@@ -82,9 +147,10 @@
             
             // Create a FormData object from the form
             var formData = new FormData(document.getElementById("myForm"));
+            formData.append("meeting", selectedTimeLabel.innerText.split(': ')[1]); // Add selected time to form data
             
             // Send the form data to the Google Apps Script Web App URL
-            fetch("https://script.google.com/macros/s/AKfycbwC1th9NwkgufffkIkk-QiAI90cyyoMB_ZLcLkZowEUIMB7TDZpjLKWp4kABG2JIxbOMA/exec", {
+            fetch("https://script.google.com/macros/s/AKfycbyVWqCho55zZbrwC2OY20LxPiueUW8pQIi_ADGx-UWU0TLLuVVfx-6Tc0YM8ffx4QULiQ/exec", {
                 method: "POST",
                 body: formData
             })
