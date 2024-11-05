@@ -19,7 +19,7 @@
         label {
             font-weight: bold;
         }
-        input[type="text"], input[type="email"] {
+        input[type="text"], input[type="email"], input[type="date"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -27,20 +27,21 @@
             border-radius: 5px;
         }
         button {
-            background-color: #ffecb3; /* Same background color */
-            color: #5d4037; /* Brown text */
+            background-color: #5d4037; /* Brown background */
+            color: white;
             padding: 10px 15px;
-            border: 1px solid #5d4037;
+            border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
         }
         button:hover {
-            background-color: #ffe082; /* Slightly darker yellow */
+            background-color: #3e2723; /* Darker brown on hover */
         }
         #response {
             margin-top: 20px;
             font-weight: bold;
+            color: #388e3c; /* Green color for success */
         }
     </style>
 </head>
@@ -54,6 +55,8 @@
         <input type="email" id="email" name="email" required><br>
         <label for="company">Company:</label><br>
         <input type="text" id="company" name="company"><br><br>
+        <label for="meeting">Meeting Date:</label><br>
+        <input type="date" id="meeting" name="meeting" required><br><br>
         <button type="submit">Submit</button>
         <div id="response"></div>
     </form>
@@ -86,11 +89,13 @@
                 submittedEmails.push(email);
                 
                 // Display a success message
-                document.getElementById("response").innerText = "Done!";
+                document.getElementById("response").innerText = "Reservation submitted successfully!";
+                document.getElementById("response").style.color = "#388e3c"; // Success color
             })
             .catch(error => {
                 console.error("Error:", error);
                 document.getElementById("response").innerText = "Submission failed.";
+                document.getElementById("response").style.color = "#d32f2f"; // Error color
             });
         }
     </script>
