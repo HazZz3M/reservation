@@ -5,43 +5,52 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f4e3; /* Light background */
-            color: #5d4037; /* Brown text */
+            background-color: #1D1D1B; /* Dark background */
+            color: #FEE92E; /* Yellow text for contrast */
             margin: 0;
             padding: 20px;
         }
         form {
-            background-color: #ffecb3; /* Light orange-yellow background */
-            padding: 20px;
+            background-color: #333; /* Darker form background for contrast */
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            color: #FEE92E; /* Yellow text for form */
         }
         label {
             font-weight: bold;
+            margin-bottom: 5px;
+            display: inline-block;
         }
-        input[type="text"], input[type="email"], input[type="time"], input[type="datetime-local"] {
+        input[type="text"], input[type="email"], input[type="time"] {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin: 10px 0;
-            border: 1px solid #a1887f; /* Brown border */
+            border: 1px solid #FEE92E; /* Yellow border to match the theme */
             border-radius: 5px;
-            background-color: #fff8e1; /* Light background for input fields */
+            background-color: #2E2D2B; /* Slightly lighter background for input fields */
+            color: #FEE92E; /* Yellow text inside inputs */
+        }
+        input[type="text"]:focus, input[type="email"]:focus, input[type="time"]:focus {
+            outline-color: #FEE92E; /* Yellow outline on focus */
         }
         button {
-            background-color: #8d6e63; /* Match button background with form background */
-            color: white; /* White text */
-            padding: 10px 15px;
-            border: none; /* No border */
+            background-color: #FEE92E; /* Yellow button */
+            color: #1D1D1B; /* Dark text for contrast */
+            padding: 12px 20px;
+            border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
         }
         button:hover {
-            background-color: #6f4c3e; /* Darker brown on hover */
+            background-color: #FFD700; /* Lighter yellow on hover */
+            color: #1D1D1B; /* Dark text on hover */
         }
         #response {
             margin-top: 20px;
             font-weight: bold;
+            color: #FEE92E; /* Yellow response text */
         }
     </style>
 </head>
@@ -55,11 +64,11 @@
         <input type="email" id="email" name="email" required><br>
         <label for="company">Company:</label><br>
         <input type="text" id="company" name="company"><br><br>
-        
-        <!-- New Meeting Date and Time input field -->
-        <label for="meeting">Meeting Date and Time:</label><br>
-        <input type="datetime-local" id="meeting" name="meeting" required><br><br>
-        
+
+        <!-- Meeting Time input field -->
+        <label for="meeting">Meeting Time:</label><br>
+        <input type="time" id="meeting" name="meeting" required><br><br>
+
         <button type="submit">Submit</button>
         <div id="response"></div>
     </form>
@@ -80,7 +89,7 @@
             var formData = new FormData(document.getElementById("myForm"));
             
             // Send the form data to the Google Apps Script Web App URL
-            fetch("https://script.google.com/macros/s/AKfycbyVWqCho55zZbrwC2OY20LxPiueUW8pQIi_ADGx-UWU0TLLuVVfx-6Tc0YM8ffx4QULiQ/exec", {
+            fetch("https://script.google.com/macros/s/AKfycbyzpqWySHb3ZwH9p0E0pWdUyYMczVKlNj1rVP4S5jfe6aDYNHb6EtQVNF5mnHUyaNFOKA/exec", {
                 method: "POST",
                 body: formData
             })
