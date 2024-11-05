@@ -6,38 +6,39 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #1D1D1B;
-            color: #FEE92E;
+            background-color: #1D1D1B; /* Dark background */
+            color: #FEE92E; /* Yellow text */
             margin: 0;
             padding: 20px;
         }
         form {
-            background-color: #333;
+            background-color: #333; /* Dark background for the form */
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            color: #FEE92E;
+            color: #FEE92E; /* Yellow text */
         }
         label {
             font-weight: bold;
             margin-bottom: 5px;
             display: inline-block;
+            color: #FEE92E; /* Yellow label color */
         }
-        input[type="text"], input[type="email"], input[type="time"] {
+        input[type="text"], input[type="email"], input[type="time"], input[type="text"].flatpickr-time {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
-            border: 1px solid #FEE92E;
+            border: 1px solid #FFFFFF; /* White border for input fields */
             border-radius: 5px;
-            background-color: #2E2D2B;
-            color: #FEE92E;
+            background-color: #2E2D2B; /* Slightly lighter dark background for input fields */
+            color: #FEE92E; /* Yellow text inside the input fields */
         }
-        input[type="time"]:focus {
-            outline-color: #FEE92E;
+        input[type="text"]:focus, input[type="email"]:focus, input[type="time"]:focus, .flatpickr-time:focus {
+            outline-color: #FEE92E; /* Yellow outline on focus */
         }
         button {
-            background-color: #FEE92E;
-            color: #1D1D1B;
+            background-color: #FEE92E; /* Yellow button */
+            color: #1D1D1B; /* Dark text */
             padding: 12px 20px;
             border: none;
             border-radius: 5px;
@@ -45,8 +46,8 @@
             font-weight: bold;
         }
         button:hover {
-            background-color: #FFD700;
-            color: #1D1D1B;
+            background-color: #FFD700; /* Lighter yellow on hover */
+            color: #1D1D1B; /* Dark text on hover */
         }
         #response {
             margin-top: 20px;
