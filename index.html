@@ -20,13 +20,14 @@
             font-weight: bold;
             color: #FEE92E; /* Label color */
         }
-        input[type="text"], input[type="email"], select {
+        input[type="text"], input[type="email"], input[type="time"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             border: 1px solid white; /* White border */
             border-radius: 5px;
-            background-color: #fff8e1; /* Light background for input fields */
+            background-color: #4A4A4A; /* Dark background for input fields */
+            color: #FEE92E; /* Text color in input fields */
         }
         button {
             background-color: #FEE92E; /* Submit button color */
@@ -59,22 +60,9 @@
         <label for="company">Company:</label><br>
         <input type="text" id="company" name="company"><br><br>
         
-        <!-- Meeting Time selection -->
+        <!-- Meeting Time input -->
         <label for="meeting">Meeting Time:</label><br>
-        <select id="meeting" name="meeting" required>
-            <option value="" disabled selected>Select time</option>
-            <script>
-                const hours = [...Array(12).keys()].map(i => i + 1); // 1 to 12
-                const minutes = ['00', '15', '30', '45']; // Minute options
-                const select = document.getElementById('meeting');
-
-                hours.forEach(hour => {
-                    minutes.forEach(minute => {
-                        select.innerHTML += `<option value="${hour}:${minute} ${hour < 12 ? 'AM' : 'PM'}">${hour}:${minute} ${hour < 12 ? 'AM' : 'PM'}</option>`;
-                    });
-                });
-            </script>
-        </select><br><br>
+        <input type="time" id="meeting" name="meeting" required><br><br>
         
         <button type="submit">Submit</button>
         <div id="response"></div>
