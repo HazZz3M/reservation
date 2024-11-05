@@ -2,57 +2,46 @@
 <html>
 <head>
     <title>Form Submission</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #1D1D1B; /* Dark background */
-            color: #FEE92E; /* Yellow text */
+            background-color: #f8f4e3; 
+            color: #5d4037; 
             margin: 0;
             padding: 20px;
         }
         form {
-            background-color: #333; /* Dark background for the form */
-            padding: 30px;
+            background-color: #ffecb3; 
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            color: #FEE92E; /* Yellow text */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         label {
             font-weight: bold;
-            margin-bottom: 5px;
-            display: inline-block;
-            color: #FEE92E; /* Yellow label color */
         }
-        input[type="text"], input[type="email"], input[type="time"], input[type="text"].flatpickr-time {
+        input[type="text"], input[type="email"], input[type="time"] {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             margin: 10px 0;
-            border: 1px solid #FFFFFF; /* White border for input fields */
+            border: 1px solid #a1887f;
             border-radius: 5px;
-            background-color: #2E2D2B; /* Slightly lighter dark background for input fields */
-            color: #FEE92E; /* Yellow text inside the input fields */
-        }
-        input[type="text"]:focus, input[type="email"]:focus, input[type="time"]:focus, .flatpickr-time:focus {
-            outline-color: #FEE92E; /* Yellow outline on focus */
+            background-color: #fff8e1;
         }
         button {
-            background-color: #FEE92E; /* Yellow button */
-            color: #1D1D1B; /* Dark text */
-            padding: 12px 20px;
+            background-color: #FEE92E; 
+            color: white;
+            padding: 10px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
         }
         button:hover {
-            background-color: #FFD700; /* Lighter yellow on hover */
-            color: #1D1D1B; /* Dark text on hover */
+            background-color: #8d6e63;
         }
         #response {
             margin-top: 20px;
             font-weight: bold;
-            color: #FEE92E;
         }
     </style>
 </head>
@@ -67,53 +56,40 @@
         <label for="company">Company:</label><br>
         <input type="text" id="company" name="company"><br><br>
         
-        <!-- Use Flatpickr for easier time selection -->
         <label for="meeting">Meeting Time:</label><br>
-        <input type="text" id="meeting" name="meeting" class="flatpickr-time" required><br><br>
+        <input type="time" id="meeting" name="meeting" required><br><br>
         
         <button type="submit">Submit</button>
         <div id="response"></div>
     </form>
 
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        let submitted = false; // Track if the form has been submitted
+        let submitted = false;
 
         function submitForm(event) {
-            event.preventDefault(); // Prevent the default form submission
+            event.preventDefault();
+            
+            // Check if form is already submitted
+            if (submitted) return;
+            submitted = true;
 
-            // Check if the form has already been submitted
-            if (submitted) {
-                return; // Exit if already submitted
-            }
-            submitted = true; // Mark as submitted
-
-            // Create a FormData object from the form
+            // Create form data
             var formData = new FormData(document.getElementById("myForm"));
 
-            // Send the form data to the Google Apps Script Web App URL
+            // Send form data to the Google Apps Script Web App
             fetch("https://script.google.com/macros/s/AKfycbwC1th9NwkgufffkIkk-QiAI90cyyoMB_ZLcLkZowEUIMB7TDZpjLKWp4kABG2JIxbOMA/exec", {
                 method: "POST",
                 body: formData
             })
             .then(response => response.text())
             .then(result => {
-                // Display a success message
-                document.getElementById("response").innerText = "Done!";
+                document.getElementById("response").innerText = "Success!";
             })
             .catch(error => {
                 console.error("Error:", error);
                 document.getElementById("response").innerText = "Submission failed.";
             });
         }
-
-        // Initialize Flatpickr with a time format
-        flatpickr(".flatpickr-time", {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-            time_24hr: true, // Use 24-hour format
-        });
     </script>
 </body>
 </html>
