@@ -29,7 +29,7 @@
             color: #FEE92E; /* Yellow color for labels */
         }
         input[type="text"], input[type="email"], input[type="time"] {
-            width: 100%;
+            width: calc(100% - 22px); /* Adjust width for padding and border */
             padding: 10px;
             margin: 10px 0;
             border: 1px solid white; /* White borders */
@@ -46,6 +46,7 @@
             cursor: pointer;
             font-weight: bold;
             width: 100%; /* Full width button */
+            margin-top: 10px; /* Add margin above button */
         }
         button:hover {
             background-color: #FFC107; /* Lighter yellow on hover */
@@ -67,7 +68,7 @@
         <label for="email">Email:</label><br>
         <input type="email" id="email" name="email" required><br>
         <label for="company">Company:</label><br>
-        <input type="text" id="company" name="company"><br><br>
+        <input type="text" id="company" name="company"><br>
         
         <label for="meeting">Meeting Time:</label><br>
         <input type="time" id="meeting" name="meeting" required><br><br>
