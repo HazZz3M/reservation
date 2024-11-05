@@ -31,7 +31,7 @@
             background-color: #2E2D2B; /* Slightly lighter background for input fields */
             color: #FEE92E; /* Yellow text inside inputs */
         }
-        input[type="text"]:focus, input[type="email"]:focus, input[type="time"]:focus {
+        input[type="time"]:focus {
             outline-color: #FEE92E; /* Yellow outline on focus */
         }
         button {
@@ -52,6 +52,24 @@
             font-weight: bold;
             color: #FEE92E; /* Yellow response text */
         }
+        /* Add some custom styling for the time input */
+        .time-picker-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .time-picker-container input[type="time"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #2E2D2B; /* Match background for better integration */
+            color: #FEE92E;
+            border: 1px solid #FEE92E;
+            font-size: 16px;
+        }
+        .time-picker-label {
+            margin-right: 10px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
@@ -65,9 +83,11 @@
         <label for="company">Company:</label><br>
         <input type="text" id="company" name="company"><br><br>
 
-        <!-- Meeting Time input field -->
-        <label for="meeting">Meeting Time:</label><br>
-        <input type="time" id="meeting" name="meeting" required><br><br>
+        <!-- New Meeting Time input field with improved design -->
+        <div class="time-picker-container">
+            <label for="meeting" class="time-picker-label">Meeting Time:</label>
+            <input type="time" id="meeting" name="meeting" required>
+        </div><br>
 
         <button type="submit">Submit</button>
         <div id="response"></div>
