@@ -2,20 +2,21 @@
 <html>
 <head>
     <title>Form Submission</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #1D1D1B; /* Dark background */
-            color: #FEE92E; /* Yellow text */
+            background-color: #1D1D1B;
+            color: #FEE92E;
             margin: 0;
             padding: 20px;
         }
         form {
-            background-color: #333; /* Darker form background */
+            background-color: #333;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            color: #FEE92E; /* Yellow text for form */
+            color: #FEE92E;
         }
         label {
             font-weight: bold;
@@ -26,17 +27,17 @@
             width: 100%;
             padding: 12px;
             margin: 10px 0;
-            border: 1px solid #FEE92E; /* Yellow border for inputs */
+            border: 1px solid #FEE92E;
             border-radius: 5px;
-            background-color: #2E2D2B; /* Slightly lighter background for input fields */
-            color: #FEE92E; /* Yellow text inside inputs */
+            background-color: #2E2D2B;
+            color: #FEE92E;
         }
         input[type="time"]:focus {
-            outline-color: #FEE92E; /* Yellow outline on focus */
+            outline-color: #FEE92E;
         }
         button {
-            background-color: #FEE92E; /* Yellow button */
-            color: #1D1D1B; /* Dark text for button */
+            background-color: #FEE92E;
+            color: #1D1D1B;
             padding: 12px 20px;
             border: none;
             border-radius: 5px;
@@ -44,31 +45,13 @@
             font-weight: bold;
         }
         button:hover {
-            background-color: #FFD700; /* Lighter yellow on hover */
-            color: #1D1D1B; /* Dark text on hover */
+            background-color: #FFD700;
+            color: #1D1D1B;
         }
         #response {
             margin-top: 20px;
             font-weight: bold;
-            color: #FEE92E; /* Yellow response text */
-        }
-        /* Add some custom styling for the time input */
-        .time-picker-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .time-picker-container input[type="time"] {
-            width: 100%;
-            padding: 12px;
-            background-color: #2E2D2B; /* Match background for better integration */
             color: #FEE92E;
-            border: 1px solid #FEE92E;
-            font-size: 16px;
-        }
-        .time-picker-label {
-            margin-right: 10px;
-            font-size: 18px;
         }
     </style>
 </head>
@@ -82,32 +65,31 @@
         <input type="email" id="email" name="email" required><br>
         <label for="company">Company:</label><br>
         <input type="text" id="company" name="company"><br><br>
-
-        <!-- New Meeting Time input field with improved design -->
-        <div class="time-picker-container">
-            <label for="meeting" class="time-picker-label">Meeting Time:</label>
-            <input type="time" id="meeting" name="meeting" required>
-        </div><br>
-
+        
+        <!-- Use Flatpickr for easier time selection -->
+        <label for="meeting">Meeting Time:</label><br>
+        <input type="text" id="meeting" name="meeting" class="flatpickr-time" required><br><br>
+        
         <button type="submit">Submit</button>
         <div id="response"></div>
     </form>
 
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         let submitted = false; // Track if the form has been submitted
 
         function submitForm(event) {
             event.preventDefault(); // Prevent the default form submission
-            
+
             // Check if the form has already been submitted
             if (submitted) {
                 return; // Exit if already submitted
             }
             submitted = true; // Mark as submitted
-            
+
             // Create a FormData object from the form
             var formData = new FormData(document.getElementById("myForm"));
-            
+
             // Send the form data to the Google Apps Script Web App URL
             fetch("https://script.google.com/macros/s/AKfycbyzpqWySHb3ZwH9p0E0pWdUyYMczVKlNj1rVP4S5jfe6aDYNHb6EtQVNF5mnHUyaNFOKA/exec", {
                 method: "POST",
@@ -123,6 +105,14 @@
                 document.getElementById("response").innerText = "Submission failed.";
             });
         }
+
+        // Initialize Flatpickr with a time format
+        flatpickr(".flatpickr-time", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true, // Use 24-hour format
+        });
     </script>
 </body>
 </html>
