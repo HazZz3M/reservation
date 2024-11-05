@@ -25,18 +25,20 @@
             margin: 10px 0;
             border: 1px solid #a1887f; /* Brown border */
             border-radius: 5px;
+            background-color: #fff8e1; /* Light background for input fields */
         }
         button {
-            background-color: #8d6e63; /* Darker brown button */
-            color: white;
+            background-color: #f8f4e3; /* Match button background with form background */
+            color: #8d6e63; /* Brown text */
             padding: 10px 15px;
-            border: none;
+            border: 2px solid #8d6e63; /* Brown border for button */
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
         }
         button:hover {
-            background-color: #6f4c3e; /* Darker brown on hover */
+            background-color: #8d6e63; /* Darker brown on hover */
+            color: #fff; /* White text on hover */
         }
         #response {
             margin-top: 20px;
@@ -79,7 +81,7 @@
             var formData = new FormData(document.getElementById("myForm"));
             
             // Send the form data to the Google Apps Script Web App URL
-            fetch("https://script.google.com/macros/s/AKfycbxRmUVRs0Eb3blXYdaFOOFa-nzVzdbNu9WTjKW4GTlC/dev", {
+            fetch("https://script.google.com/macros/s/AKfycbyzpqWySHb3ZwH9p0E0pWdUyYMczVKlNj1rVP4S5jfe6aDYNHb6EtQVNF5mnHUyaNFOKA/exec", {
                 method: "POST",
                 body: formData
             })
