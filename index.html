@@ -82,6 +82,12 @@
         <input type="password" id="password" name="password" placeholder="Enter Password" required><br>
         <button type="button" onclick="checkPassword()">Submit</button>
         <div id="passwordError" style="color: red; display: none;">Incorrect password. Please try again.</div>
+        
+        <div id="scriptURLField" style="display:none; margin-top: 10px;">
+            <label for="scriptURL">Enter Google Apps Script Web App URL:</label><br>
+            <input type="text" id="scriptURL" name="scriptURL" placeholder="Enter URL here" required><br>
+            <button type="button" onclick="saveScriptURL()">Save URL</button>
+        </div>
     </div>
 
     <!-- Button to toggle the hidden section -->
@@ -101,12 +107,6 @@
         <label for="meeting">Meeting Time:</label><br>
         <input type="time" id="meeting" name="meeting" required><br><br>
         
-        <div id="scriptURLField" style="display:none;">
-            <label for="scriptURL">Enter Google Apps Script Web App URL:</label><br>
-            <input type="text" id="scriptURL" name="scriptURL" placeholder="Enter URL here" required><br>
-            <button type="button" onclick="saveScriptURL()">Save URL</button>
-        </div>
-
         <button type="submit">Submit</button>
         <div id="response"></div>
     </form>
@@ -119,11 +119,7 @@
         // Function to toggle the visibility of the hidden section
         function toggleHiddenSection() {
             var hiddenSection = document.getElementById("hiddenSection");
-            if (hiddenSection.style.display === "none") {
-                hiddenSection.style.display = "block";
-            } else {
-                hiddenSection.style.display = "none";
-            }
+            hiddenSection.style.display = hiddenSection.style.display === "none" ? "block" : "none";
         }
 
         // Function to check if the entered password is correct
