@@ -20,7 +20,7 @@
             font-weight: bold;
             color: #FEE92E; /* Label color */
         }
-        input[type="text"], input[type="email"], input[type="time"] {
+        input[type="text"], input[type="email"], input[type="time"], input[type="text"].meeting-time {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -60,9 +60,9 @@
         <label for="company">Company:</label><br>
         <input type="text" id="company" name="company"><br><br>
         
-        <!-- Meeting Time input -->
-        <label for="meeting">Meeting Time:</label><br>
-        <input type="time" id="meeting" name="meeting" required><br><br>
+        <!-- Change Meeting Time input to a text input for free selection -->
+        <label for="meeting">Meeting Time (e.g., 2:30 PM):</label><br>
+        <input type="text" id="meeting" name="meeting" class="meeting-time" required placeholder="HH:MM AM/PM"><br><br>
         
         <button type="submit">Submit</button>
         <div id="response"></div>
