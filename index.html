@@ -78,8 +78,8 @@
 
     <!-- Hidden section for Google Apps Script URL -->
     <div id="hiddenSection">
-        <label for="password">Enter Password:</label><br>
-        <input type="password" id="password" name="password" placeholder="Enter Password" required><br>
+        <label for="password">Enter Password to Update Script URL:</label><br>
+        <input type="password" id="password" name="password" placeholder="Enter Password"><br>
         <button type="button" onclick="checkPassword()">Submit</button>
         <div id="passwordError" style="color: red; display: none;">Incorrect password. Please try again.</div>
         
@@ -114,7 +114,6 @@
     <script>
         let submitted = false; // Track if the form has been submitted
         let scriptURL = ""; // Variable to hold the script URL
-        let isPasswordCorrect = false; // Flag to track password validation
 
         // Function to toggle the visibility of the hidden section
         function toggleHiddenSection() {
@@ -129,7 +128,6 @@
             if (enteredPassword === correctPassword) {
                 document.getElementById("passwordError").style.display = "none";
                 document.getElementById("scriptURLField").style.display = "block"; // Show the URL input field
-                isPasswordCorrect = true; // Mark password as correct
             } else {
                 document.getElementById("passwordError").style.display = "block"; // Show error message
             }
@@ -137,12 +135,8 @@
 
         // Function to save the script URL entered by the user
         function saveScriptURL() {
-            if (isPasswordCorrect) {
-                scriptURL = document.getElementById("scriptURL").value;
-                alert("Script URL saved!");
-            } else {
-                alert("You must enter the correct password to save the URL.");
-            }
+            scriptURL = document.getElementById("scriptURL").value;
+            alert("Script URL saved!");
         }
 
         // Function to handle form submission
