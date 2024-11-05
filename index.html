@@ -5,20 +5,20 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #1D1D1B; /* Background color */
+            background-color: #1D1D1B; /* Body background color */
             color: #FEE92E; /* Text color */
             margin: 0;
             padding: 20px;
         }
         form {
-            background-color: #3C3C3C; /* Form background */
+            background-color: #3C3C3C; /* Dark background for the form */
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         label {
             font-weight: bold;
-            color: white; /* Label color */
+            color: #FEE92E; /* Label color */
         }
         input[type="text"], input[type="email"], select {
             width: 100%;
@@ -59,11 +59,10 @@
         <label for="company">Company:</label><br>
         <input type="text" id="company" name="company"><br><br>
         
-        <!-- New Meeting Time input field -->
+        <!-- Meeting Time selection -->
         <label for="meeting">Meeting Time:</label><br>
         <select id="meeting" name="meeting" required>
             <option value="" disabled selected>Select time</option>
-            <!-- Generate options for each hour and minute -->
             <script>
                 const hours = [...Array(12).keys()].map(i => i + 1); // 1 to 12
                 const minutes = ['00', '15', '30', '45']; // Minute options
