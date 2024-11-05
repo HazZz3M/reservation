@@ -51,6 +51,7 @@
             display: flex;
             justify-content: center;
             margin: 20px 0;
+            position: relative;
         }
         .wheel {
             width: 150px;
@@ -59,6 +60,7 @@
             border: 10px solid #FEE92E;
             position: relative;
             overflow: hidden;
+            background-color: #4A4A4A; /* Wheel background */
         }
         .hand {
             width: 4px;
@@ -136,6 +138,25 @@
             updateSelectedTime();
         };
 
+        // Handle time wheel rotation
+        const wheel = document.getElementById('timeWheel');
+        wheel.addEventListener('click', function(event) {
+            const rect = wheel.getBoundingClientRect();
+            const wheelCenterX = rect.left + rect.width / 2;
+            const wheelCenterY = rect.top + rect.height / 2;
+            const angle = Math.atan2(event.clientY - wheelCenterY, event.clientX - wheelCenterX) * (180 / Math.PI) + 90;
+
+            if (angle < 0) angle += 360;
+
+            // Set the hour and minute angles based on click position
+            hourAngle = Math.floor(angle / 30) * 30; // Adjust hour hand (30 degrees per hour)
+            minuteAngle = Math.floor(angle / 6) * 6; // Adjust minute hand (6 degrees per minute)
+
+            rotateHand(hourHand, hourAngle);
+            rotateHand(minuteHand, minuteAngle);
+            updateSelectedTime();
+        });
+
         function submitForm(event) {
             event.preventDefault(); // Prevent the default form submission
             
@@ -150,7 +171,7 @@
             formData.append("meeting", selectedTimeLabel.innerText.split(': ')[1]); // Add selected time to form data
             
             // Send the form data to the Google Apps Script Web App URL
-            fetch("https://script.google.com/macros/s/AKfycbyVWqCho55zZbrwC2OY20LxPiueUW8pQIi_ADGx-UWU0TLLuVVfx-6Tc0YM8ffx4QULiQ/exec", {
+            fetch("https://script.google.com/macros/s/AKfycbwC1th9NwkgufffkIkk-QiAI90cyyoMB_ZLcLkZowEUIMB7TDZpjLKWp4kABG2JIxbOMA/exec", {
                 method: "POST",
                 body: formData
             })
