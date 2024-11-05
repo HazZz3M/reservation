@@ -19,18 +19,19 @@
         label {
             font-weight: bold;
         }
-        input[type="text"], input[type="email"] {
+        input[type="text"], input[type="email"], input[type="time"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             border: 1px solid #a1887f; /* Brown border */
             border-radius: 5px;
+            background-color: #fff8e1; /* Light background for input fields */
         }
         button {
-            background-color: #8d6e63; /* Darker brown button */
-            color: white;
+            background-color: #8d6e63; /* Match button background with form background */
+            color: white; /* White text */
             padding: 10px 15px;
-            border: none;
+            border: none; /* No border */
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
@@ -54,6 +55,10 @@
         <input type="email" id="email" name="email" required><br>
         <label for="company">Company:</label><br>
         <input type="text" id="company" name="company"><br><br>
+        
+        <label for="meeting">Meeting Time:</label><br>
+        <input type="time" id="meeting" name="meeting" required><br><br>
+        
         <button type="submit">Submit</button>
         <div id="response"></div>
     </form>
@@ -74,7 +79,7 @@
             var formData = new FormData(document.getElementById("myForm"));
             
             // Send the form data to the Google Apps Script Web App URL
-            fetch("https://script.google.com/macros/s/AKfycbztJo_y02ZOytOiCp5lIA84IxkW9-_-RIwffFeDoxIK-ReHVIHsa8pMKc_vUqT6j6QYvA/exec", {
+            fetch("https://script.google.com/macros/s/AKfycbyVWqCho55zZbrwC2OY20LxPiueUW8pQIi_ADGx-UWU0TLLuVVfx-6Tc0YM8ffx4QULiQ/exec", {
                 method: "POST",
                 body: formData
             })
