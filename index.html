@@ -1,105 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phone Number Search</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 10px;
-    }
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #4285f4;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-size: 14px;
-      border-radius: 4px;
-      margin-right: 5px;
-    }
-    button:hover {
-      background-color: #357ae8;
-    }
-    .result {
-      margin-top: 15px;
-      font-size: 14px;
-    }
-    .new-row {
-      margin-top: 20px;
-      font-size: 14px;
-    }
-  </style>
-</head>
-<body>
-  <h3>Search Phone Numbers</h3>
-  <input type="text" id="searchInput" placeholder="Enter last 4 digits" />
-  <button onclick="performSearch()">Search</button>
+const SHEET_NAME = 'Sheet1'; // Sheet name is 'Sheet1'
+const CHECKBOX_COLUMN = 3; // Column C for checkboxes
+const PHONE_COLUMN = 2; // Column B for phone numbers
+const NAME_COLUMN = 1; // Column A for names
 
-  <div class="result" id="result"></div>
-  <div class="new-row" id="newRow" style="display: none;">
-    <h4>No match found. Add new row:</h4>
-    <input type="text" id="newName" placeholder="Enter Name" />
-    <input type="number" id="newPhone" placeholder="Enter Phone Number" />
-    <button onclick="addNewRow()">Add Row</button>
-  </div>
+// Serve the HTML file hosted on GitHub
+function doGet() {
+  var url = 'https://raw.githubusercontent.com/HazZz3M/reservation/main/index.html'; // GitHub raw URL
+  var html = UrlFetchApp.fetch(url).getContentText();
+  return HtmlService.createHtmlOutput(html);
+}
 
-  <script>
-    function performSearch() {
-      const last4Digits = document.getElementById('searchInput').value;
-      if (!last4Digits || last4Digits.length !== 4) {
-        document.getElementById('result').innerHTML = '<p style="color:red;">Please enter exactly 4 digits.</p>';
-        return;
-      }
+// Search for phone numbers or names and return matches
+function search(query, type) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  const data = sheet.getDataRange().getValues();
+  const results = [];
 
-      google.script.run.withSuccessHandler(displayResults).searchPhoneNumber(last4Digits);
+  for (let i = 1; i < data.length; i++) { // Start from row 1 to skip headers
+    const name = data[i][NAME_COLUMN - 1];
+    const phoneNumber = data[i][PHONE_COLUMN - 1];
+    
+    // Search by phone number (last 4 digits)
+    if (type === 'phone' && phoneNumber && phoneNumber.toString().endsWith(query)) {
+      results.push({
+        name: name,
+        phoneNumber: phoneNumber,
+        row: i + 1, // The row number for checkbox update
+        checkbox: data[i][CHECKBOX_COLUMN - 1]
+      });
     }
-
-    function displayResults(results) {
-      if (results === 'not found') {
-        document.getElementById('result').innerHTML = '<p>No match found for the entered digits.</p>';
-        document.getElementById('newRow').style.display = 'block'; // Show the "Add new row" section
-      } else {
-        let output = '';
-        results.forEach(result => {
-          output += `
-            <p><strong>Phone Number:</strong> ${result.phoneNumber}</p>
-            <p><strong>Name:</strong> ${result.name}</p>
-            <p><strong>Checkbox:</strong> <span id="checkboxStatus${result.row}">${result.checkbox ? 'Checked' : 'Unchecked'}</span></p>
-            <button onclick="updateCheckbox(${result.row}, true)">Check</button>
-            <button onclick="updateCheckbox(${result.row}, false)">Uncheck</button>
-            <hr>
-          `;
-        });
-        document.getElementById('result').innerHTML = output;
-        document.getElementById('newRow').style.display = 'none';
-      }
+    
+    // Search by name
+    if (type === 'name' && name && name.toLowerCase().includes(query.toLowerCase())) {
+      results.push({
+        name: name,
+        phoneNumber: phoneNumber,
+        row: i + 1,
+        checkbox: data[i][CHECKBOX_COLUMN - 1]
+      });
     }
+  }
 
-    function updateCheckbox(row, checked) {
-      google.script.run.updateCheckbox(row, checked);
-      document.getElementById(`checkboxStatus${row}`).innerText = checked ? 'Checked' : 'Unchecked';
-    }
+  return results.length > 0 ? results : 'not found';
+}
 
-    function addNewRow() {
-      const name = document.getElementById('newName').value;
-      const phoneNumber = document.getElementById('newPhone').value;
-      if (name && phoneNumber) {
-        google.script.run.addNewRow(name, phoneNumber);
-        document.getElementById('result').innerHTML = `<p>New row added: ${name}, ${phoneNumber}</p>`;
-        document.getElementById('newName').value = '';
-        document.getElementById('newPhone').value = '';
-      } else {
-        document.getElementById('result').innerHTML = '<p style="color:red;">Please fill in both fields.</p>';
-      }
-    }
-  </script>
-</body>
-</html>
+// Update the checkbox value for a specific row
+function updateCheckbox(row, checked) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  sheet.getRange(row, CHECKBOX_COLUMN).setValue(checked);
+}
+
+// Add a new row to the sheet
+function addNewRow(name, phoneNumber) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  sheet.appendRow([name, phoneNumber, false]);
+}
