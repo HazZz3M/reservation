@@ -1,112 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Form Submission</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1D1D1B; /* Dark background */
-            color: #FEE92E; /* Yellow text */
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center; /* Center the title */
-            color: white; /* White color for title */
-            font-weight: bold; /* Bold title */
-            margin-bottom: 30px;
-        }
-        form {
-            background-color: #2D2D2B; /* Darker background for form */
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: 0 auto; /* Center the form */
-        }
-        label {
-            font-weight: bold;
-            color: #FEE92E; /* Yellow color for labels */
-        }
-        input[type="text"], input[type="email"], input[type="time"] {
-            width: calc(100% - 22px); /* Adjust width for padding and border */
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid white; /* White borders */
-            border-radius: 5px;
-            background-color: #333333; /* Dark background for input fields */
-            color: white; /* White text in input fields */
-        }
-        button {
-            background-color: #FEE92E; /* Yellow submit button */
-            color: #1D1D1B; /* Dark text for the button */
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%; /* Full width button */
-            margin-top: 10px; /* Add margin above button */
-        }
-        button:hover {
-            background-color: #FFC107; /* Lighter yellow on hover */
-        }
-        #response {
-            margin-top: 20px;
-            font-weight: bold;
-            color: #FEE92E; /* Yellow response text */
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phone Number Search</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 10px;
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 4px;
+      margin-right: 5px;
+    }
+    button:hover {
+      background-color: #357ae8;
+    }
+    .result {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .new-row {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Meeting Reservation Form</h1> <!-- Title in white and bold at the top of the form -->
-    <form id="myForm" onsubmit="submitForm(event)">
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" required><br>
-        <label for="phone">Phone:</label><br>
-        <input type="text" id="phone" name="phone" required><br>
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br>
-        <label for="company">Company:</label><br>
-        <input type="text" id="company" name="company"><br>
-        
-        <label for="meeting">Meeting Time:</label><br>
-        <input type="time" id="meeting" name="meeting" required><br><br>
-        
-        <button type="submit">Submit</button>
-        <div id="response"></div>
-    </form>
+  <h3>Search Phone Numbers</h3>
+  <input type="text" id="searchInput" placeholder="Enter last 4 digits" />
+  <button onclick="performSearch()">Search</button>
 
-    <script>
-        let submitted = false; // Track if the form has been submitted
+  <div class="result" id="result"></div>
+  <div class="new-row" id="newRow" style="display: none;">
+    <h4>No match found. Add new row:</h4>
+    <input type="text" id="newName" placeholder="Enter Name" />
+    <input type="number" id="newPhone" placeholder="Enter Phone Number" />
+    <button onclick="addNewRow()">Add Row</button>
+  </div>
 
-        function submitForm(event) {
-            event.preventDefault(); // Prevent the default form submission
+  <script>
+    function performSearch() {
+      const last4Digits = document.getElementById('searchInput').value;
+      if (!last4Digits || last4Digits.length !== 4) {
+        document.getElementById('result').innerHTML = '<p style="color:red;">Please enter exactly 4 digits.</p>';
+        return;
+      }
 
-            // Check if the form has already been submitted
-            if (submitted) {
-                return; // Exit if already submitted
-            }
-            submitted = true; // Mark as submitted
+      google.script.run.withSuccessHandler(displayResults).searchPhoneNumber(last4Digits);
+    }
 
-            // Create a FormData object from the form
-            var formData = new FormData(document.getElementById("myForm"));
+    function displayResults(results) {
+      if (results === 'not found') {
+        document.getElementById('result').innerHTML = '<p>No match found for the entered digits.</p>';
+        document.getElementById('newRow').style.display = 'block'; // Show the "Add new row" section
+      } else {
+        let output = '';
+        results.forEach(result => {
+          output += `
+            <p><strong>Phone Number:</strong> ${result.phoneNumber}</p>
+            <p><strong>Name:</strong> ${result.name}</p>
+            <p><strong>Checkbox:</strong> <span id="checkboxStatus${result.row}">${result.checkbox ? 'Checked' : 'Unchecked'}</span></p>
+            <button onclick="updateCheckbox(${result.row}, true)">Check</button>
+            <button onclick="updateCheckbox(${result.row}, false)">Uncheck</button>
+            <hr>
+          `;
+        });
+        document.getElementById('result').innerHTML = output;
+        document.getElementById('newRow').style.display = 'none';
+      }
+    }
 
-            // Send the form data to the Google Apps Script Web App URL
-            fetch("https://script.google.com/macros/s/AKfycbyZS6RBAi1UfL6SdKhnY-lHddecgLhfdge788cdvxkRpkgcSU0SzHaQ6wN4IEDhoAlUzw/exec", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.text())
-            .then(result => {
-                // Display the success message immediately after submission
-                document.getElementById("response").innerHTML = "<span style='font-weight: bold; color: green;'>Submitted Successfully!</span>";
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                document.getElementById("response").innerHTML = "<span style='font-weight: bold; color: red;'>Submission failed. Please try again.</span>";
-            });
-        }
-    </script>
+    function updateCheckbox(row, checked) {
+      google.script.run.updateCheckbox(row, checked);
+      document.getElementById(`checkboxStatus${row}`).innerText = checked ? 'Checked' : 'Unchecked';
+    }
+
+    function addNewRow() {
+      const name = document.getElementById('newName').value;
+      const phoneNumber = document.getElementById('newPhone').value;
+      if (name && phoneNumber) {
+        google.script.run.addNewRow(name, phoneNumber);
+        document.getElementById('result').innerHTML = `<p>New row added: ${name}, ${phoneNumber}</p>`;
+        document.getElementById('newName').value = '';
+        document.getElementById('newPhone').value = '';
+      } else {
+        document.getElementById('result').innerHTML = '<p style="color:red;">Please fill in both fields.</p>';
+      }
+    }
+  </script>
 </body>
 </html>
