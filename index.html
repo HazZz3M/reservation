@@ -1,160 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phone and Name Search</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #121212;
-      color: #e0e0e0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      flex-direction: column;
-    }
-    input[type="text"], button {
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 16px;
-      width: 300px;
-      border-radius: 5px;
-      border: 1px solid #444;
-      background-color: #333;
-      color: #e0e0e0;
-    }
-    button {
-      background-color: #FEE92E; /* Dark yellow */
-      color: black;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #FDC300; /* Slightly lighter yellow */
-    }
-    .results {
-      margin-top: 20px;
-    }
-    .result-item {
-      background-color: #1f1f1f;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-    }
-    .result-item strong {
-      color: #bb86fc;
-    }
-    .not-found {
-      color: #ff6f00;
-    }
-    .loading {
-      color: #bb86fc;
-      font-size: 18px;
-      text-align: center;
-    }
-    input[type="checkbox"] {
-      accent-color: #bb86fc;
-    }
-    .spinner {
-      border: 4px solid #f3f3f3; /* Light grey */
-      border-top: 4px solid #bb86fc; /* Purple */
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 2s linear infinite;
-      margin: 0 auto;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2D2D2B;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            width: 100%;
+            border-radius: 5px;
+            border: none;
+        }
+        input[type="text"] {
+            background-color: #1D1D1B;
+            color: white;
+        }
+        button {
+            background-color: #FEE92E;
+            color: #2D2D2B;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #FFD700;
+        }
+        .results {
+            margin-top: 20px;
+            color: #FEE92E;
+        }
+        .success-message {
+            margin-top: 20px;
+            color: green;
+        }
+        .not-found-message {
+            margin-top: 20px;
+            color: red;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h2>Search Reservation</h2>
+        <input type="text" id="searchInput" placeholder="Enter phone number or name" />
+        <button onclick="searchData()">Search</button>
+        <div class="results" id="results"></div>
+        <div class="success-message" id="successMessage"></div>
+        <div class="not-found-message" id="notFoundMessage"></div>
+    </div>
 
-  <h1>Phone and Name Search</h1>
+    <script>
+        function searchData() {
+            var query = document.getElementById("searchInput").value;
+            var type = (isNaN(query)) ? 'name' : 'phone'; // Check if the query is a number or name
 
-  <input type="text" id="searchInput" placeholder="Enter last 4 digits of phone number or name" />
-  
-  <button onclick="searchData()">Search</button>
-  
-  <div id="loading" class="loading" style="display: none;">
-    <div class="spinner"></div>
-    Searching...
-  </div>
+            google.script.run.withSuccessHandler(function(response) {
+                if (response === "not found") {
+                    document.getElementById('notFoundMessage').innerHTML = "No results found. Please enter a new name and phone number to add a new row.";
+                    document.getElementById('successMessage').innerHTML = ''; // Clear success message
+                } else if (Array.isArray(response)) {
+                    document.getElementById('results').innerHTML = '';
+                    response.forEach(function(result) {
+                        document.getElementById('results').innerHTML += '<p>' + result.name + ' - ' + result.phoneNumber + '</p>';
+                    });
+                    document.getElementById('notFoundMessage').innerHTML = ''; // Clear not found message
+                }
+            }).search(query, type);
+        }
 
-  <div class="results" id="results"></div>
-
-  <script>
-    function searchData() {
-      const query = document.getElementById('searchInput').value.trim();
-      if (!query) {
-        alert('Please enter a search query!');
-        return;
-      }
-
-      // Show the loading spinner
-      document.getElementById('loading').style.display = 'block';
-      document.getElementById('results').innerHTML = ''; // Clear previous results
-
-      // Determine the type of search (phone or name)
-      const searchType = query.length === 4 ? 'phone' : 'name';
-
-      google.script.run.withSuccessHandler(displayResults).search(query, searchType);
-    }
-
-    function displayResults(results) {
-      const resultsDiv = document.getElementById('results');
-      const loadingDiv = document.getElementById('loading');
-      loadingDiv.style.display = 'none'; // Hide the loading spinner
-
-      if (results === 'not found') {
-        resultsDiv.innerHTML = `<p class="not-found">No results found. Please enter a new name and phone number below to add a new row.</p>
-                                <input type="text" id="newName" placeholder="Enter Name" />
-                                <input type="text" id="newPhone" placeholder="Enter Phone Number" />
-                                <button onclick="addNewRow()">Add New Row</button>`;
-        return;
-      }
-
-      // Display the matching results
-      results.forEach(result => {
-        const resultItem = document.createElement('div');
-        resultItem.className = 'result-item';
-        
-        resultItem.innerHTML = `
-          <strong>Name:</strong> ${result.name}<br>
-          <strong>Phone Number:</strong> ${result.phoneNumber}<br>
-          <label>
-            <input type="checkbox" ${result.checkbox ? 'checked' : ''} 
-                   onchange="updateCheckbox(${result.row}, this.checked)">
-            Select
-          </label>
-        `;
-        
-        resultsDiv.appendChild(resultItem);
-      });
-    }
-
-    function updateCheckbox(row, checked) {
-      google.script.run.updateCheckbox(row, checked);
-    }
-
-    function addNewRow() {
-      const name = document.getElementById('newName').value.trim();
-      const phone = document.getElementById('newPhone').value.trim();
-      
-      if (name && phone) {
-        google.script.run.addNewRow(name, phone);
-        alert('New row added!');
-      } else {
-        alert('Please fill in both the name and phone number.');
-      }
-    }
-  </script>
+        function addNewRow(name, phoneNumber) {
+            google.script.run.withSuccessHandler(function(response) {
+                document.getElementById('successMessage').innerHTML = response; // Display success message
+                document.getElementById('notFoundMessage').innerHTML = ''; // Clear not found message
+            }).addNewRow(name, phoneNumber);
+        }
+    </script>
 </body>
 </html>
