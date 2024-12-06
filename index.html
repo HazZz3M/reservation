@@ -45,8 +45,27 @@
     .not-found {
       color: #ff6f00;
     }
+    .loading {
+      color: #bb86fc;
+      font-size: 18px;
+      text-align: center;
+    }
     input[type="checkbox"] {
       accent-color: #bb86fc;
+    }
+    .spinner {
+      border: 4px solid #f3f3f3; /* Light grey */
+      border-top: 4px solid #bb86fc; /* Purple */
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 2s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -58,6 +77,11 @@
   
   <button onclick="searchData()">Search</button>
   
+  <div id="loading" class="loading" style="display: none;">
+    <div class="spinner"></div>
+    Searching...
+  </div>
+
   <div class="results" id="results"></div>
 
   <script>
@@ -68,6 +92,10 @@
         return;
       }
 
+      // Show the loading spinner
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('results').innerHTML = ''; // Clear previous results
+
       // Determine the type of search (phone or name)
       const searchType = query.length === 4 ? 'phone' : 'name';
 
@@ -76,7 +104,8 @@
 
     function displayResults(results) {
       const resultsDiv = document.getElementById('results');
-      resultsDiv.innerHTML = ''; // Clear previous results
+      const loadingDiv = document.getElementById('loading');
+      loadingDiv.style.display = 'none'; // Hide the loading spinner
 
       if (results === 'not found') {
         resultsDiv.innerHTML = `<p class="not-found">No results found. Please enter a new name and phone number below to add a new row.</p>
