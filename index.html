@@ -68,7 +68,11 @@
             var query = document.getElementById("searchInput").value;
             var type = (isNaN(query)) ? 'name' : 'phone'; // Check if the query is a number or name
 
+            document.getElementById("results").innerHTML = "Searching..."; // Show search indicator
+
             google.script.run.withSuccessHandler(function(response) {
+                document.getElementById("results").innerHTML = ""; // Clear search indicator
+
                 if (response === "not found") {
                     document.getElementById('notFoundMessage').innerHTML = "No results found. Please enter a new name and phone number to add a new row.";
                     document.getElementById('successMessage').innerHTML = ''; // Clear success message
