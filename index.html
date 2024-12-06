@@ -5,8 +5,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Phone and Name Search</title>
   <style>
-    /* Your existing styles here */
-    /* For example, dark theme, center content, etc. */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+    }
+    input[type="text"], button, select {
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      width: 300px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background-color: #333;
+      color: #e0e0e0;
+    }
+    button {
+      background-color: #FEE92E; /* Dark yellow */
+      color: black;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #FDC300; /* Slightly lighter yellow */
+    }
+    .results {
+      margin-top: 20px;
+    }
+    .result-item {
+      background-color: #1f1f1f;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+    }
+    .result-item strong {
+      color: #bb86fc;
+    }
+    .not-found {
+      color: #ff6f00;
+    }
+    .loading {
+      color: #bb86fc;
+      font-size: 18px;
+      text-align: center;
+    }
+    input[type="checkbox"] {
+      accent-color: #bb86fc;
+    }
+    .spinner {
+      border: 4px solid #f3f3f3; /* Light grey */
+      border-top: 4px solid #bb86fc; /* Purple */
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 2s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
