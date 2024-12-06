@@ -3,108 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phone Number or Name Search</title>
+  <title>Phone and Name Search</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 10px;
+      background-color: #121212;
+      color: #e0e0e0;
+      padding: 20px;
     }
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      box-sizing: border-box;
+    input[type="text"], button {
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      width: 300px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background-color: #333;
+      color: #e0e0e0;
     }
     button {
-      background-color: #4285f4;
+      background-color: #6200ea;
       color: white;
       border: none;
-      padding: 8px 12px;
       cursor: pointer;
-      font-size: 14px;
-      border-radius: 4px;
-      margin-right: 5px;
     }
     button:hover {
-      background-color: #357ae8;
+      background-color: #3700b3;
     }
-    .result {
-      margin-top: 15px;
-      font-size: 14px;
-    }
-    .new-row {
+    .results {
       margin-top: 20px;
-      font-size: 14px;
+    }
+    .result-item {
+      background-color: #1f1f1f;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+    }
+    .result-item strong {
+      color: #bb86fc;
+    }
+    .not-found {
+      color: #ff6f00;
+    }
+    input[type="checkbox"] {
+      accent-color: #bb86fc;
     }
   </style>
 </head>
 <body>
-  <h3>Search by Phone Number or Name</h3>
-  <label for="searchType">Choose search type:</label>
-  <select id="searchType">
-    <option value="phone">Phone Number (Last 4 Digits)</option>
-    <option value="name">Name</option>
-  </select>
-  <input type="text" id="searchInput" placeholder="Enter query" />
-  <button onclick="performSearch()">Search</button>
 
-  <div class="result" id="result"></div>
-  <div class="new-row" id="newRow" style="display: none;">
-    <h4>No match found. Add new row:</h4>
-    <input type="text" id="newName" placeholder="Enter Name" />
-    <input type="number" id="newPhone" placeholder="Enter Phone Number" />
-    <button onclick="addNewRow()">Add Row</button>
-  </div>
+  <h1>Phone and Name Search</h1>
+
+  <input type="text" id="searchInput" placeholder="Enter last 4 digits of phone number or name" />
+  
+  <button onclick="searchData()">Search</button>
+  
+  <div class="results" id="results"></div>
 
   <script>
-    function performSearch() {
-      const query = document.getElementById('searchInput').value;
-      const searchType = document.getElementById('searchType').value;
-      
+    function searchData() {
+      const query = document.getElementById('searchInput').value.trim();
       if (!query) {
-        document.getElementById('result').innerHTML = '<p style="color:red;">Please enter a query to search.</p>';
+        alert('Please enter a search query!');
         return;
       }
+
+      // Determine the type of search (phone or name)
+      const searchType = query.length === 4 ? 'phone' : 'name';
 
       google.script.run.withSuccessHandler(displayResults).search(query, searchType);
     }
 
     function displayResults(results) {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = ''; // Clear previous results
+
       if (results === 'not found') {
-        document.getElementById('result').innerHTML = '<p>No match found for the entered query.</p>';
-        document.getElementById('newRow').style.display = 'block'; // Show the "Add new row" section
-      } else {
-        let output = '';
-        results.forEach(result => {
-          output += `
-            <p><strong>Phone Number:</strong> ${result.phoneNumber}</p>
-            <p><strong>Name:</strong> ${result.name}</p>
-            <p><strong>Checkbox:</strong> <span id="checkboxStatus${result.row}">${result.checkbox ? 'Checked' : 'Unchecked'}</span></p>
-            <button onclick="updateCheckbox(${result.row}, true)">Check</button>
-            <button onclick="updateCheckbox(${result.row}, false)">Uncheck</button>
-            <hr>
-          `;
-        });
-        document.getElementById('result').innerHTML = output;
-        document.getElementById('newRow').style.display = 'none';
+        resultsDiv.innerHTML = `<p class="not-found">No results found. Please enter a new name and phone number below to add a new row.</p>
+                                <input type="text" id="newName" placeholder="Enter Name" />
+                                <input type="text" id="newPhone" placeholder="Enter Phone Number" />
+                                <button onclick="addNewRow()">Add New Row</button>`;
+        return;
       }
+
+      // Display the matching results
+      results.forEach(result => {
+        const resultItem = document.createElement('div');
+        resultItem.className = 'result-item';
+        
+        resultItem.innerHTML = `
+          <strong>Name:</strong> ${result.name}<br>
+          <strong>Phone Number:</strong> ${result.phoneNumber}<br>
+          <label>
+            <input type="checkbox" ${result.checkbox ? 'checked' : ''} 
+                   onchange="updateCheckbox(${result.row}, this.checked)">
+            Select
+          </label>
+        `;
+        
+        resultsDiv.appendChild(resultItem);
+      });
     }
 
     function updateCheckbox(row, checked) {
       google.script.run.updateCheckbox(row, checked);
-      document.getElementById(`checkboxStatus${row}`).innerText = checked ? 'Checked' : 'Unchecked';
     }
 
     function addNewRow() {
-      const name = document.getElementById('newName').value;
-      const phoneNumber = document.getElementById('newPhone').value;
-      if (name && phoneNumber) {
-        google.script.run.addNewRow(name, phoneNumber);
-        document.getElementById('result').innerHTML = `<p>New row added: ${name}, ${phoneNumber}</p>`;
-        document.getElementById('newName').value = '';
-        document.getElementById('newPhone').value = '';
+      const name = document.getElementById('newName').value.trim();
+      const phone = document.getElementById('newPhone').value.trim();
+      
+      if (name && phone) {
+        google.script.run.addNewRow(name, phone);
+        alert('New row added!');
       } else {
-        document.getElementById('result').innerHTML = '<p style="color:red;">Please fill in both fields.</p>';
+        alert('Please fill in both the name and phone number.');
       }
     }
   </script>
